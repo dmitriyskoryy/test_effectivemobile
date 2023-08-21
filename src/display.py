@@ -1,4 +1,10 @@
+import os
+
+os.environ["TERM"] = 'linux'
+print(os.name)
+
 def view():
+    print("\n" * 100)
     """ Функция вывода в консоль заголовка и шапки"""
     print(' ' * 78, 'ТЕЛЕФОННЫЙ СПРАВОЧНИК')
     print('-' * 184)

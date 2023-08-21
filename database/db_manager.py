@@ -42,7 +42,7 @@ class DBmanager:
                 f.write(json.dumps(data_json))
             return "Создана новая запись!"
         except Exception as e:
-            print(e)
+            return f'{e}'
 
 
     def update_record(self, data: dict, update_record_id: int = None) -> str:
@@ -57,7 +57,9 @@ class DBmanager:
                     f.write(json.dumps(data_json))
                 return f"Запись № {update_record_id} изменена!"
         except Exception as e:
-            print(e)
+            return f'{e}'
+
+
 
     def _get_records(self) -> list:
         """ Возвращает записи из файла (БД)"""
@@ -66,10 +68,10 @@ class DBmanager:
             end_row = self.limit * self.page
             with open(self.path_db, 'r') as f:
                 data_json = json.loads(f.read())
-                items = []
-                for item in data_json:
-                    items.append((item, data_json.get(f'{item}')))
-                return items[start_row:end_row]
+                _list = []
+                for row in data_json:
+                    _list.append((row, data_json.get(row)))
+                return _list[start_row:end_row]
         except Exception as e:
             print(e)
 
@@ -101,3 +103,17 @@ class DBmanager:
 
         records = self._get_records()
         return records
+
+    def find_records(self, params: list) -> list:
+        """ Поиск записей по заданным параметрам """
+
+        with open(self.path_db, 'r') as f:
+            data_json = json.loads(f.read())
+            _list = []
+            for param in params:
+                for row in data_json:
+                    if param in data_json.get(row).values():
+                        _list.append((row, data_json.get(row)))
+
+            return _list
+

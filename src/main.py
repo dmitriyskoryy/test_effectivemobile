@@ -31,26 +31,42 @@ def record_menu(update: bool = False) -> str:
 
 
 def search():
-    pass
+    s = input("Введите ключевые слова через пробел:  ")
+    _list = s.split(' ')
+    result = db.find_records(params=_list)
+    view()
+    view_row(result)
 
 
 def run_command(s: str):
     if s == '>':
         view()
         view_row(db.next_page())
-    if s == '<':
+    elif s == '<':
         view()
         view_row(db.prev_page())
-    if s == '+':
+    elif s == '+':
         result = record_menu()
-        print(result)
-    if s == '-':
+        view()
+        view_row(db.prev_page())
+        print('\n\n', result)
+    elif s == '-':
         result = record_menu(update=True)
-        print(result)
-    if s == '?':
+        view()
+        view_row(db.prev_page())
+        print('\n\n', result)
+    elif s == '?':
         search()
-    if s == 'q':
+    elif s == '#':
+        view()
+        view_row(db.prev_page())
+    elif s == 'q':
         exit()
+    else:
+        view()
+        view_row(db.prev_page())
+
+
 
 def menu():
     while True:
