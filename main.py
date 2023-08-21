@@ -31,11 +31,24 @@ def record_menu(update: bool = False) -> str:
 
 
 def search():
+    """ Поиск по файлу (БД). Ключевые слова вводятся через пробел.
+    Возвращаются записи в которых хотя бы по одному полю есть совпадение с ключевым словом"""
     s = input("Введите ключевые слова через пробел:  ")
     _list = s.split(' ')
     result = db.find_records(params=_list)
     view()
     view_row(result)
+
+
+def change_limit() -> str:
+    """ Устанавливает кол-во записей выводимых на экран. Необходимо ввести число."""
+
+    num = input("Введите число записей, которые необходимо отображать на экране (от 1 до 50):  ")
+    try:
+        limit = db.change_limit(int(num))
+        return f"Количество записей отображаемых на странице изменено на {limit}"
+    except Exception as e:
+        return f"{e}"
 
 
 def run_command(s: str):
@@ -48,24 +61,25 @@ def run_command(s: str):
     elif s == '+':
         result = record_menu()
         view()
-        view_row(db.prev_page())
+        view_row(db.last_page())
         print('\n\n', result)
     elif s == '-':
         result = record_menu(update=True)
         view()
-        view_row(db.prev_page())
+        view_row(db.last_page())
         print('\n\n', result)
     elif s == '?':
         search()
     elif s == '#':
+        result = change_limit()
         view()
         view_row(db.prev_page())
+        print('\n\n', result)
     elif s == 'q':
         exit()
     else:
         view()
         view_row(db.prev_page())
-
 
 
 def menu():
@@ -76,7 +90,7 @@ def menu():
         print('- Поиск по базе:   ?')
         print('- Следующая страница: >')
         print('- Придыдущая страница: <')
-        print('- Параметры: #')
+        print('- Установить кол-во записей на странице: #')
         print('- Выход: q')
         s = input("Введите команду:  ")
         run_command(s)

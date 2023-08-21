@@ -1,8 +1,3 @@
-import os
-
-os.environ["TERM"] = 'linux'
-print(os.name)
-
 def view():
     print("\n" * 100)
     """ Функция вывода в консоль заголовка и шапки"""
@@ -30,15 +25,16 @@ def view_row(data: list):
         phonework = row[1].get("phonework")
         phoneperson = row[1].get("phoneperson")
 
-        ind_las = (24 - len(lastname)) // 2
-        ind_fir = (26 - len(firstname)) // 2
-        ind_sur = (26 - len(surname)) // 2
-        ind_com = (26 - len(company)) // 2
-        ind_phow = (30 - len(phonework)) // 2
-        ind_phop = (30 - len(phoneperson)) // 2
-        print(f'  {_id} ', ' ' * ind_las, f'{lastname}', ' ' * ind_las,
-              ' ' * ind_fir, f'{firstname}', ' ' * ind_fir,
-              ' ' * ind_sur, f'{surname}', ' ' * ind_sur,
-              ' ' * ind_com, f'{company}', ' ' * ind_com,
-              ' ' * ind_phow, f'{phonework}', ' ' * ind_phow,
-              ' ' * ind_phop, f'{phoneperson}', ' ' * ind_phop)
+        ind_id = 5 - len(str(_id))
+        ind_las = 24 - len(lastname)
+        ind_fir = 26 - len(firstname)
+        ind_sur = 25 - len(surname)
+        ind_com = 31 - len(company)
+        ind_phow = 28 - len(phonework)
+        print(f'  {_id} ',
+              ' ' * ind_id, f'{lastname}',
+              ' ' * ind_las, f'{firstname}',
+              ' ' * ind_fir, f'{surname}',
+              ' ' * ind_sur, f'{company}',
+              ' ' * ind_com, f'{phonework}',
+              ' ' * ind_phow, f'{phoneperson}')

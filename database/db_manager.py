@@ -1,13 +1,15 @@
 import json
-import os
+import math
 
-path_app = os.pardir
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 class DBmanager:
     """ Менеджер БД"""
 
-    def __init__(self, path_db: str = f'{path_app}/database/db.txt'):
+    def __init__(self, path_db: str = f'{BASE_DIR}/db.txt'):
         self.page = 0
         self.limit = 4
         self.path_db = path_db
@@ -44,10 +46,8 @@ class DBmanager:
         except Exception as e:
             return f'{e}'
 
-
     def update_record(self, data: dict, update_record_id: int = None) -> str:
         """  Редактирует запись в файле (БД)"""
-
         try:
             with open(self.path_db, 'r') as f:
                 data_json = json.loads(f.read())
@@ -58,8 +58,6 @@ class DBmanager:
                 return f"Запись № {update_record_id} изменена!"
         except Exception as e:
             return f'{e}'
-
-
 
     def _get_records(self) -> list:
         """ Возвращает записи из файла (БД)"""
@@ -80,13 +78,15 @@ class DBmanager:
         исходя из количества записей в БД и self.limit
         """
         total_record_db = self._total_record()
+        if total_record_db <= 1:
+            return 1
         mod = total_record_db % self.limit
         if mod != 0:
             max_page = total_record_db / self.limit
         else:
             max_page = total_record_db // self.limit
 
-        return max_page
+        return math.ceil(max_page)
 
     def next_page(self):
         """ Возвращает следующую страницу с записями из файла (БД) """
@@ -104,6 +104,12 @@ class DBmanager:
         records = self._get_records()
         return records
 
+    def last_page(self):
+        """ Возвращает последнюю страницу с записями из файла (БД)"""
+        self.page = self._max_page()
+        records = self._get_records()
+        return records
+
     def find_records(self, params: list) -> list:
         """ Поиск записей по заданным параметрам """
 
@@ -117,3 +123,12 @@ class DBmanager:
 
             return _list
 
+    def change_limit(self, limit: int = 4) -> int:
+        """ Устанавливает кол-во (self.limit) записей выводимых на странице.
+        Число не должно быть больше 50"""
+        if limit < 1 or limit > 50:
+            self.limit = 4
+        else:
+            self.limit = limit
+
+        return self.limit
